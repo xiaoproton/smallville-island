@@ -1,35 +1,38 @@
-import { createApp } from 'pixi.js';
+import { Application } from 'pixi.js';
 import { loadMap } from './map.js';
 import { createAgent } from './agents.js';
 import { updateUI } from './ui.js';
 import { api } from './api.js';
 
-const app = createApp({
-    width: 800,
-    height: 800,
-    backgroundColor: 0x1a1a2e
-});
+async function init() {
+    const app = new Application();
 
-app.renderer.resize(window.innerWidth, window.innerHeight);
+    await app.init({
+        resizeTo: window,
+        backgroundColor: 0x1a1a2e
+    });
 
-document.body.appendChild(app.view);
+    document.body.appendChild(app.canvas);
 
-// Load world
-const world = await loadMap(app);
-const agent = createAgent(app);
+    // Load world map
+    const world = await loadMap(app);
 
-// UI
-const ui = updateUI(app);
+    // Create agent sprite
+    const agent = createAgent(app);
 
-// Game loop
-app.ticker.add((delta) => {
-    // Update agent animation
-    agent.update(delta);
-});
+    // Build UI with agent reference
+    const ui = updateUI(app, agent);
+    ui.updateInfo(agent.x, agent.y);
+    ui.addLog('🌴 Smallville Island started!');
+    ui.addLog(`📍 Agent at (${Math.round(agent.x)}, ${Math.round(agent.y)})`);
+    ui.addLog('▶ Press START to begin AI loop');
 
-// Handle window resize
-window.addEventListener('resize', () => {
-    app.renderer.resize(window.innerWidth, window.innerHeight);
-});
+    // Game loop
+    app.ticker.add((delta) => {
+        agent.update(delta);
+    });
 
-console.log('Smallville Island started!');
+    console.log('Smallville Island started!');
+}
+
+init().catch(console.error);

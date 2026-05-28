@@ -1,5 +1,5 @@
-const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const sqlite3 = require(path.join(__dirname, '../server/node_modules/sqlite3')).verbose();
 
 const dbPath = path.join(__dirname, '../server/smallville.db');
 const schemaPath = path.join(__dirname, '../shared/schema.sql');

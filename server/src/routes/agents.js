@@ -30,10 +30,10 @@ router.get('/:agentId', (req, res) => {
 // Get agent decision
 router.post('/:agentId/decide', async (req, res) => {
     const { agentId } = req.params;
-    const { x, y, mapWidth, mapHeight, memory } = req.body;
+    const { x, y, mapWidth, mapHeight, memory, surroundings } = req.body;
 
     try {
-        const action = await decideNextAction(agentId, x, y, mapWidth, mapHeight, memory);
+        const action = await decideNextAction(agentId, x, y, mapWidth, mapHeight, memory, surroundings);
         res.json({ action });
     } catch (error) {
         res.status(500).json({ error: error.message });
